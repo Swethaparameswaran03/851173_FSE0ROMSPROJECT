@@ -1,0 +1,168 @@
+<div class="container rounded">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+          <span class="fs-4"><b>Return Order Management Portal</b></span>
+        </a>
+    
+        <ul class="nav nav-pills">
+          <li class="nav-item"><button (click)="goHome()" class={{homenav}} aria-current="page">Home</button></li>
+          <li class="nav-item"><button (click)="returnReq() "class={{requestnav}}>New Request</button></li>
+          <li class="nav-item"><button (click)="viewRequestList()" class={{reqListnav}}>View Completed Request</button></li>
+          <li class="nav-item"><button (click)="logout()" class="nav-link">Logout</button></li>
+        </ul>
+        
+      </header> 
+    <section class="vh-100" style="background-color:wheat;background-image: url(https://cdn0.iconfinder.com/data/icons/online-shopping-17/368/online-order-008-512.png);
+    background-repeat: no-repeat;background-size: 650px 600px; background-position: right">
+        <div class="container py-5 h-100">
+          <div class="row d-flex justify-content-left align-items-left h-100">
+            <div class="col-18 col-md-8 col-lg-10 col-xl-9">
+                <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+                        <div *ngIf="isAuthorized">
+    
+                            <div *ngIf="currentview=='home'">
+                                Returns management is a process in retail and e-commerce that starts with customers wishing to return a product, and ends with the business collecting, organizing, and restocking that product.
+                            </div>
+                        <div *ngIf="currentview=='returnreqview'">
+                            <form (ngSubmit)="returnreqSubmit()" #myForm="ngForm">
+                                    <div class="form-group">
+                                        <label class="form-label">Name</label>
+                                       <input [(ngModel)]="processrequest.name" type="text" name="name" class="form-control 
+                                       form-control-lg"  required minlength='3' pattern="^[a-zA-Z]+$" #name="ngModel" />
+                                       <div *ngIf="name.touched && name.invalid" class="alert alert-danger">
+                                        <div *ngIf="name.errors?.['required']"> Name is required .</div>
+                                        <div *ngIf="name.errors?.['minlength']">Name should be  atleast 3 character .</div>
+                                        <div *ngIf="name.errors?.['pattern']">Only alphabets are allowed .</div>
+
+                                     </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Contact No</label>
+                                        <input [(ngModel)]="processrequest.contactno" type="number" min="0000000000" max="9999999999"
+                                         name="contactno" class="form-control form-control-lg" required minLength = '10' #contactno="ngModel"/>
+                                         <div *ngIf="contactno.touched && contactno.invalid" class="alert alert-danger">
+                                            <div *ngIf="contactno.errors  && contactno.errors?.['required']"> Contact No  is required .</div>
+                                            <div *ngIf="contactno.errors && contactno.errors?.['minLength']">Contact No should be valid .</div>
+                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Component Type</label>
+                                        <select [(ngModel)]="processrequest.componentType" name="componentType" 
+                                        class="form-select form-select-lg mb-4" required #componentType="ngModel"> 
+                                            <option value="Integral">Integral</option>
+                                            <option value="Accessory">Accessory</option>
+                                        </select>
+                                        <div *ngIf="componentType.touched && componentType.invalid" class="alert alert-danger">
+                                        <div *ngIf="componentType.errors  && componentType.errors?.['required']"> ComponentType  is required .</div>
+                                        
+                                       </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Component Name</label>
+                                        <input [(ngModel)]="processrequest.componentName" type="text" name="componentName"
+                                         class="form-control form-control-lg" required  pattern="^[a-zA-Z]+$" #componentName="ngModel"/>
+                                         <div *ngIf="componentName.touched && componentName.invalid" class="alert alert-danger">
+                                            <div *ngIf="componentName.errors  && componentName.errors?.['required']"> Component Name is required .</div>
+                                            <div *ngIf="componentName.errors?.['pattern']">Only alphabets are allowed .</div>
+                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Quantity</label>
+                                        <input [(ngModel)]="processrequest.quantity" type="number" min="1" name="quantity"
+                                         class="form-control form-control-lg" required #quantity="ngModel" />
+                                         <div *ngIf="quantity.touched && quantity.invalid" class="alert alert-danger">
+                                            <div *ngIf="quantity.errors  && quantity.errors?.['required']"> Quantity is required .</div>
+                                            <div *ngIf="quantity.errors  && quantity.errors?.['min']"> Quantity is invalid .</div>
+                                         </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input [(ngModel)]="processrequest.priority" type="checkbox" name="priority" value="true" class="form-check-input" />
+                                        <label class="form-label">Priority</label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" [disabled]="!myForm.form.valid">Submit</button>
+                                    <button style="margin-left: 10px;"  type ="reset" (click)="clearForm()" class="btn btn-secondary">Clear Form</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div *ngIf="currentview=='processview'">
+                            <div class="form-group">
+                                <label class="input-label">Request ID</label>
+                                <textarea [(ngModel)]="processresponse.requestId" type="text" name="priority" class="form-control form-control-lg" disabled></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="input-label" >Processing Charge</label>
+                                <input [(ngModel)]="processresponse.processingCharge" type="text" name="priority" class="form-control form-control-lg" disabled />
+                            </div>
+                                <div class="form-group">
+                                <label class="input-label" >Packaging and Delivery Charge</label>    
+                                <input [(ngModel)]="processresponse.packagingAndDeliveryCharge" type="text" name="priority" class="form-control form-control-lg" disabled />                
+                            </div>
+                                  <div class="form-group">
+                                <label class="input-label">Date of delivery</label>    
+                                <input [(ngModel)]="processresponse.dateOfDelivery" type="text" name="priority" class="form-control form-control-lg" disabled />                
+                            </div>
+                            <br> 
+                            <div>
+                                <button class="btn btn-primary" (click)="confirmPaymentDetails()">Confirm Details</button>
+                                <button style="margin-left: 10px;" (click)=" returnReq()" class="btn btn-secondary">Go back</button>
+                            </div>
+                        </div>
+                        <div *ngIf="currentview=='paymentview'">
+                            <form (ngSubmit)="makePayment()" #myForm="ngForm">
+                                <div class="form-group">
+                                    <label class="form-label">Enter your credit card number</label>
+                                    <input [(ngModel)]="payment.cardnumber" type="text" name="cardnumber" class="form-control form-control-lg" 
+                                    required maxlength='16' #cardnumber="ngModel"/>
+                                    <div *ngIf="cardnumber.touched && cardnumber.invalid" class="alert alert-danger">
+                                        <div *ngIf="cardnumber.errors  && cardnumber.errors?.['required']"> Credit Card Number is required .</div>
+                                        <div *ngIf="cardnumber.errors  && cardnumber.errors?.['maxlength']">Credit Card Number should be valid.</div>
+                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Enter the daily credit limit</label>
+                                    <input [(ngModel)]="payment.creditLimit" type="text" name="creditLimit" class="form-control form-control-lg" />
+                                </div>
+                                <div class="form-outline mb-4">
+                                    <label class="form-label">Total Processing Charge</label>
+                                    <input [(ngModel)]="payment.processingCharge" name="processingCharge" type="text" class="form-control form-control-lg" disabled />
+                                </div>
+                                <div>
+                                    <button class="btn btn-primary" type="submit" [disabled]="!myForm.form.valid">Confirm and make Payment</button>
+                                    <button style="margin-left: 10px;" (click)="goBackToConfirmPage()" class="btn btn-secondary">Go Back</button>
+                                </div>
+                                <div>
+                                    <br>
+                                    <p>{{paymentDone}}</p>
+                                </div>
+                            </form>
+                            {{msgError}}
+                        </div>
+                        <div *ngIf="currentview=='reqlist'">
+                            <table class="table table-striped table table-bordered">
+                                <thead>
+                                    <th>Serial number</th>
+                                    <th>Request Id</th>
+                                    <th>Card Number</th>
+                                    <th>Processing Charge</th>
+                                </thead>
+                                <tr *ngFor="let payment of paymentList; let i=index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{payment.requestid}}</td>
+                                    <td>{{payment.cardnumber}}</td>
+                                    <td>{{payment.processingCharge}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div *ngIf="!isAuthorized" class="text-center">
+                        <p style="text-align: center;"> Whoops!! Wrong token or token expired. Please login again </p>
+                        <a routerLink=""><button class="btn btn-success pull-right" > Login</button></a>
+                        <br><br><br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

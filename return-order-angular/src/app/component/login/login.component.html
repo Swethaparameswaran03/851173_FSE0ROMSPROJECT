@@ -1,0 +1,55 @@
+<section class="vh-100" style="background-color: wheat;background-image: url(https://www.freeiconspng.com/thumbs/login-icon/login-icon-png-27.png);
+background-repeat: no-repeat;background-size: 600px 600px; background-position: right;">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-left align-items-left h-100">
+        <div class="col-24 col-md-10 col-lg-6 col-xl-6">
+          <div class="card shadow-2-strong" style="border-radius: 1rem;">
+            <div class="card-body p-5 text-center">
+  
+              <h3 class="mb-5">Login Portal for Return Order Management</h3>
+              <form (ngSubmit)="onSubmit()">
+              <div class="form-outline mb-4">
+                <label class="form-label">Username</label>
+                <input [(ngModel)]="credentials.username" type="text" name="username" class="form-control form-control-lg" 
+                required  minlength='3' autocomplete="username"   #username="ngModel"/>
+                <div *ngIf="username.touched && username.invalid" class="alert alert-danger">
+                  <div *ngIf="username.errors  && username.errors?.['required']"> UserName is required .</div>
+                  <div *ngIf="username.errors  && username.errors?.['minlength']"> UserName should be  atleast 3 character .</div>
+                </div>
+              </div>
+  
+              <div class="form-outline mb-4">
+                <label class="form-label">Password</label>
+                <input [(ngModel)]="credentials.password" type="password" name="password" class="form-control form-control-lg" 
+                required  minlength='3'
+                #password="ngModel"/>
+                <div *ngIf="password.touched && password.invalid" class="alert alert-danger">
+                  <div *ngIf="password.errors  && password.errors?.['required']"> Password is required .</div>
+                  <div *ngIf="password.errors  && password.errors?.['minlength']"> Password should be  atleast 3 character .</div>
+                </div>
+              </div>
+  
+              <button class="btn btn-success pull-right" type="submit">Login</button>
+              <button style="margin-left: 1em;" (click)="clearLoginForm()"  class="btn btn-secondary pull-right" type="submit">Clear</button>
+              </form>
+            </div>
+          </div>
+          <br>
+          <div *ngIf="loginError">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              Login Failed!Please try again
+            </div>
+          </div>
+            <div *ngIf="!loginError">
+              <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                <div class="card-body p-5 text-center">
+              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                Enter your login details to proceed
+              </div>
+              </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
