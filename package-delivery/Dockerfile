@@ -1,4 +1,4 @@
 FROM openjdk:11
+ADD target/package-delivery-0.0.1-SNAPSHOT.jar package-delivery-0.0.1-SNAPSHOT.jar
 EXPOSE 8100
-ADD "target/*.jar" "packdeli.jar"
-ENTRYPOINT [ "java", "-jar", "/packdeli.jar" ]
+ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar package-delivery-0.0.1-SNAPSHOT.jar"]
